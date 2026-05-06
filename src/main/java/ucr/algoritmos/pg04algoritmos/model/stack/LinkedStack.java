@@ -1,8 +1,9 @@
-package ucr.algoritmos.pg04algoritmos.model;
+package ucr.algoritmos.pg04algoritmos.model.stack;
 
+import ucr.algoritmos.pg04algoritmos.model.Node;
 import util.Utility;
 
-public class LinkedStack<T> implements MyStack<T>  {
+public class LinkedStack<T> implements MyStack<T> {
     private Node<T> top; //es un apuntador
     private int size; //elementos apilados
 

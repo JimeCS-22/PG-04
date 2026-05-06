@@ -1,6 +1,8 @@
-package ucr.algoritmos.pg04algoritmos.model;
+package ucr.algoritmos.pg04algoritmos.model.linkedList;
 
-public class DoublyLinkedList<T> implements List<T>{
+import ucr.algoritmos.pg04algoritmos.model.Node;
+
+public class DoublyLinkedList<T> implements List<T> {
 
     private Node<T> head;//Inicio de la lista
     private Node<T> tail;//Final de la lista

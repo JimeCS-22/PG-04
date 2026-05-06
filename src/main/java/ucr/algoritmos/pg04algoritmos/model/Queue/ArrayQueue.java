@@ -1,6 +1,6 @@
-package ucr.algoritmos.pg04algoritmos.model;
+package ucr.algoritmos.pg04algoritmos.model.Queue;
 
-public class ArrayQueue<T> implements MyQueue<T>{
+public class ArrayQueue<T> implements MyQueue<T> {
     private int n; //el tam max de la cola
     private T[] data; //arreglo de objetos
     private Integer[] priorityQueue; //para el manejo de prioridades

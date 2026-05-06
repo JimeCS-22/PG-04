@@ -1,4 +1,6 @@
-package ucr.algoritmos.pg04algoritmos.model;
+package ucr.algoritmos.pg04algoritmos.model.linkedList;
+
+import ucr.algoritmos.pg04algoritmos.model.Node;
 
 /**
  * Lista enlazada circular y doble

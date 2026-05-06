@@ -1,6 +1,4 @@
-package ucr.algoritmos.pg04algoritmos.model;
-
-import util.Utility;
+package ucr.algoritmos.pg04algoritmos.model.stack;
 
 public class ArrayStack<T> implements MyStack<T> {
 

@@ -11,4 +11,7 @@ module ucr.algoritmos.pg04algoritmos {
     opens ucr.algoritmos.pg04algoritmos.controller to javafx.fxml;
     exports util;
     opens util to javafx.fxml;
+    opens ucr.algoritmos.pg04algoritmos.model.linkedList to javafx.base;
+    opens ucr.algoritmos.pg04algoritmos.model.stack to javafx.base;
+    opens ucr.algoritmos.pg04algoritmos.model.Queue to javafx.base;
 }

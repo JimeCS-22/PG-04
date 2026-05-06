@@ -1,4 +1,4 @@
-package ucr.algoritmos.pg04algoritmos.model;
+package ucr.algoritmos.pg04algoritmos.model.stack;
 
 public class StackException extends Exception {
 

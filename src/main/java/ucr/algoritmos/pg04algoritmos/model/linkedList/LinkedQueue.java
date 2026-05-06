@@ -1,6 +1,10 @@
-package ucr.algoritmos.pg04algoritmos.model;
+package ucr.algoritmos.pg04algoritmos.model.linkedList;
 
-public class LinkedQueue<T> implements MyQueue<T>{
+import ucr.algoritmos.pg04algoritmos.model.Queue.MyQueue;
+import ucr.algoritmos.pg04algoritmos.model.Node;
+import ucr.algoritmos.pg04algoritmos.model.Queue.QueueException;
+
+public class LinkedQueue<T> implements MyQueue<T> {
     private Node<T> front; //anterior
     private Node<T> rear; //posterior
     private int size; //control de elementos encolados

@@ -12,6 +12,9 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import ucr.algoritmos.pg04algoritmos.model.*;
 import ucr.algoritmos.pg04algoritmos.model.Node.*;
+import ucr.algoritmos.pg04algoritmos.model.linkedList.DoublyLinkedList;
+import ucr.algoritmos.pg04algoritmos.model.linkedList.LinkedList;
+import ucr.algoritmos.pg04algoritmos.model.linkedList.ListException;
 import ucr.algoritmos.pg04algoritmos.util.BigIntegerSpinnerValueFactory;
 
 import java.math.BigInteger;
