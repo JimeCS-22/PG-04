@@ -52,8 +52,19 @@ public class ArrayStack<T> implements MyStack<T> {
 
     @Override
     public T pop() throws StackException {
-        return null;
+        if (isEmpty())
+            throw new StackException("Array Stack is empty");
+
+        T popped = data[top];
+        data[top] = null;
+        top--;
+        return popped;
     }
+
+//    @Override
+//    public T pop() throws StackException {
+//        return null;
+//    }
 /*
     @Override
     public String toString() {

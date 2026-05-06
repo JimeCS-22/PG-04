@@ -1,6 +1,5 @@
 package ucr.algoritmos.pg04algoritmos.model;
 
-import jdk.jshell.execution.Util;
 import util.Utility;
 
 public class LinkedStack<T> implements MyStack<T>  {
