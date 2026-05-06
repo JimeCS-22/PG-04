@@ -1,8 +1,6 @@
-package ucr.algoritmos.pg04algoritmos.model.linkedList;
+package ucr.algoritmos.pg04algoritmos.model.Queue;
 
-import ucr.algoritmos.pg04algoritmos.model.Queue.MyQueue;
 import ucr.algoritmos.pg04algoritmos.model.Node;
-import ucr.algoritmos.pg04algoritmos.model.Queue.QueueException;
 
 public class LinkedQueue<T> implements MyQueue<T> {
     private Node<T> front; //anterior
