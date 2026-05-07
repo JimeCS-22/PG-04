@@ -46,7 +46,7 @@ public class ArrayStack<T> implements MyStack<T> {
 
     @Override
     public void push(T element) throws StackException {
-        if(top==n-1)
+        if(top==n-1)//if(top==data.length-1)
             throw new StackException("Array Stack is full");
         data[++top] = element;
     }
