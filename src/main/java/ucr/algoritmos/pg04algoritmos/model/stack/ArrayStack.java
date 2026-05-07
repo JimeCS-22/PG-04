@@ -59,11 +59,6 @@ public class ArrayStack<T> implements MyStack<T> {
         return this.data[top--];
     }
 
-//    @Override
-//    public T pop() throws StackException {
-//        return null;
-//    }
-
     @Override
     public String toString() {
         if (isEmpty()) return "Array Stack is empty";
@@ -72,12 +67,12 @@ public class ArrayStack<T> implements MyStack<T> {
         try{
             ArrayStack<T> auxStack = new ArrayStack<>(n);
 
-            while(isEmpty()){
+            while(!isEmpty()){
 
-                sb.append("[").append(auxStack.peek()).append("]");
+                sb.append("[").append(peek()).append("]");
                 auxStack.push(pop());
 
-                if(isEmpty()) sb.append(" , ");
+                if(!isEmpty()) sb.append(" , ");
             }
             //dejamos la pila original como al inicio
             while(!auxStack.isEmpty()) push(auxStack.pop());
