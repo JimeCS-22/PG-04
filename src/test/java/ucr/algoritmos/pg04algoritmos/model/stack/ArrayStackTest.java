@@ -22,11 +22,13 @@ class ArrayStackTest {
             System.out.println("Stack size: " + stack.size());
             System.out.println("-------------------------");
             System.out.println("Peek / Top: " + stack.peek());
+            System.out.println(stack);
             System.out.println("-------------------------");
 
             for (int i = 0; i < 5; i++) {
 
                 System.out.println("pop(): " + stack.pop());
+                System.out.println(stack);
 
             }
         }catch (StackException e){

@@ -59,10 +59,7 @@ public class ArrayStack<T> implements MyStack<T> {
         return this.data[top--];
     }
 
-//    @Override
-//    public T pop() throws StackException {
-//        return null;
-//    }
+
 
     @Override
     public String toString() {
@@ -77,7 +74,7 @@ public class ArrayStack<T> implements MyStack<T> {
                 sb.append("[").append(auxStack.peek()).append("]");
                 auxStack.push(pop());
 
-                if(isEmpty()) sb.append(" , ");
+                if(!isEmpty()) sb.append(" , ");
             }
             //dejamos la pila original como al inicio
             while(!auxStack.isEmpty()) push(auxStack.pop());
