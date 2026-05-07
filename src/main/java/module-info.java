@@ -2,6 +2,7 @@ module ucr.algoritmos.pg04algoritmos {
     requires javafx.controls;
     requires javafx.fxml;
     requires javafx.base;
+    requires java.desktop;
 
 
     opens ucr.algoritmos.pg04algoritmos to javafx.fxml;
