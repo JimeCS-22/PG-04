@@ -56,38 +56,39 @@ public class ArrayStack<T> implements MyStack<T> {
         if (isEmpty())
             throw new StackException("Array Stack is empty");
 
-        T popped = data[top];
-        data[top] = null;
-        top--;
-        return popped;
+        return this.data[top--];
     }
 
 //    @Override
 //    public T pop() throws StackException {
 //        return null;
 //    }
-/*
+
     @Override
     public String toString() {
-        if (isEmpty())
-            return "Array Stack is empty";
+        if (isEmpty()) return "Array Stack is empty";
 
-        StringBuilder result = new StringBuilder("Array Stack Content:\n");
-        String instance = Utility.instanceOf(data[0], data[0]);
-        boolean isClass = !instance.equals("Integer") && !instance.equals("Double") && !instance.equals("Character") && !instance.equals("String");
+        StringBuilder sb = new StringBuilder("TOP ➡️ ");
+        try{
+            ArrayStack<T> auxStack = new ArrayStack<>(n);
 
-        try {
-            ArrayStack<T> aux = new ArrayStack<T>(size());
-            while (!isEmpty()) { //desapilar
-                result.append(peek()).append(isClass? "\n" : " ");
-                aux.push(pop());
+            while(isEmpty()){
+
+                sb.append("[").append(auxStack.peek()).append("]");
+                auxStack.push(pop());
+
+                if(isEmpty()) sb.append(" , ");
             }
-            while (!aux.isEmpty()) //volver a apilar
-                push(aux.pop());
-        } catch (StackException e) {
+            //dejamos la pila original como al inicio
+            while(!auxStack.isEmpty()) push(auxStack.pop());
+
+        }catch(StackException e){
             throw new RuntimeException(e);
         }
 
-        return result.toString();
-    }*/
+        sb.append("➡️ BOTTOM");
+        return sb.toString();
+
+
+    }
 }
