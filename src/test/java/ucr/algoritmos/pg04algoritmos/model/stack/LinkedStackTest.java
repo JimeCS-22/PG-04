@@ -16,6 +16,7 @@ class LinkedStackTest {
             stack.push(value);
         }
 
+
         System.out.println("-------------------------");
         System.out.println("Stack size: " + stack.size());
         System.out.println("-------------------------");
