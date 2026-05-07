@@ -9,7 +9,7 @@ public class ArrayStack<T> implements MyStack<T> {
     public ArrayStack(int n) {
         if(n<=0) System.exit(1); //se sale
         this.n = n;
-        this.top = -1;
+        this.top = -1;//fuera de cualquier indice del arreglo
         this.data = (T[]) new Object[n];
     }
 
@@ -31,14 +31,17 @@ public class ArrayStack<T> implements MyStack<T> {
 
     @Override
     public T peek() throws StackException {
-        return null;
+        if (isEmpty())
+            throw new StackException("Array Stack is empty");
+
+        return this.data[top];
     }
 
     @Override
     public T top() throws StackException {
         if (isEmpty())
             throw new StackException("Array Stack is empty");
-        return data[top];
+        return this.data[top];
     }
 
     @Override
