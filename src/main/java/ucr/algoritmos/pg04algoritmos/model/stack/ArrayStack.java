@@ -69,9 +69,9 @@ public class ArrayStack<T> implements MyStack<T> {
         try{
             ArrayStack<T> auxStack = new ArrayStack<>(n);
 
-            while(isEmpty()){
+            while(!isEmpty()){
 
-                sb.append("[").append(auxStack.peek()).append("]");
+                sb.append("[").append(peek()).append("]");
                 auxStack.push(pop());
 
                 if(!isEmpty()) sb.append(" , ");
