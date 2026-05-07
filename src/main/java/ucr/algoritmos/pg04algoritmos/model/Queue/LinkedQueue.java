@@ -6,6 +6,7 @@ public class LinkedQueue<T> implements MyQueue<T> {
     private Node<T> front; //anterior
     private Node<T> rear; //posterior
     private int size; //control de elementos encolados
+
     public LinkedQueue() {
         front = rear = null;
         size = 0;
@@ -53,22 +54,23 @@ public class LinkedQueue<T> implements MyQueue<T> {
             rear.next = newNode;
             rear = newNode;
         }
-        size++;
+        size++; //Actualizo el contador de elementos encolados
     }
 
     @Override
     public T deQueue() throws QueueException {
-        if (isEmpty())
-            throw new QueueException("Linked Queue is empty");
+        if (isEmpty()) throw new QueueException("Linked Queue is empty");
 
-        T removed = front.data;
-        front = front.next;
+        T element = front.data;
+        //Caso 1. Cuando solo hay un elemento
+        if(front == rear) clear();
+
+        //Caso 2. Cuando hay más de un elemento
+        else {
+            front = front.next;
+        }
         size--;
-
-        if (front == null) // quedó vacía
-            rear = null;
-
-        return removed;
+        return element;
     }
 
     @Override
@@ -83,15 +85,40 @@ public class LinkedQueue<T> implements MyQueue<T> {
         return indexOf(element) != -1;
     }
 
+    //Peek y Front son lo mismo
     @Override
     public T peek() throws QueueException {
-        return front();
+        if (isEmpty()) throw new QueueException("Linked Queue is empty");
+        return front.data;
     }
 
     @Override
     public T front() throws QueueException {
-        if (isEmpty())
-            throw new QueueException("Linked Queue is empty");
+        if (isEmpty()) throw new QueueException("Linked Queue is empty");
         return front.data;
+    }
+
+    @Override
+    public String toString(){
+        if(isEmpty()) return "Array Queue is empty";
+        StringBuilder sb = new StringBuilder("FRONT ➡️ ");
+        LinkedQueue<T> auxQueue = new LinkedQueue<>();
+        try {
+            while(!isEmpty()) {
+                sb.append("[").append(peek()).append("] ");
+                auxQueue.enQueue(deQueue());
+                if (!isEmpty()) sb.append(", ");
+            }
+
+            //Al final dejamos la cola en su estado original
+            while(!auxQueue.isEmpty()) {
+                enQueue(auxQueue.deQueue());
+            }
+
+        } catch (QueueException e) {
+            throw new RuntimeException(e);
+        }
+        sb.append(" ➡️ REAR");
+        return sb.toString();
     }
 }
