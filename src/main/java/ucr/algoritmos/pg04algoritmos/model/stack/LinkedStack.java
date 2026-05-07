@@ -61,25 +61,29 @@ public class LinkedStack<T> implements MyStack<T> {
 
     @Override
     public String toString() {
-        if (isEmpty())
-            return "Stack is empty";
+        if (isEmpty()) return "Linked Stack is empty";
 
-        StringBuilder result = new StringBuilder("Linked Stack Content:\n");
-        String instance = Utility.instanceOf(top.data, top.data);
-        boolean isClass = !instance.equals("Integer") && !instance.equals("Double") && !instance.equals("Character") && !instance.equals("String");
+        StringBuilder sb = new StringBuilder("TOP ➡️ ");
+        try{
+            LinkedStack<T> auxStack = new LinkedStack<>();
 
-        try {
-            LinkedStack<T> aux = new LinkedStack<T>();
-            while (!isEmpty()) { //desapilar
-                result.append(peek()).append(isClass? "\n" : " ");
-                aux.push(pop());
+            while(!isEmpty()){
+
+                sb.append("[").append(peek()).append("]");
+                auxStack.push(pop());
+
+                if(!isEmpty()) sb.append(" , ");
             }
-            while (!aux.isEmpty()) //volver a apilar
-                push(aux.pop());
-        } catch (StackException e) {
+            //dejamos la pila original como al inicio
+            while(!auxStack.isEmpty()) push(auxStack.pop());
+
+        }catch(StackException e){
             throw new RuntimeException(e);
         }
 
-        return result.toString();
+        sb.append("➡️ BOTTOM");
+        return sb.toString();
+
+
     }
 }
