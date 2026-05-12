@@ -5,6 +5,7 @@ public class Node<T> {
     public T data;
     public Node<T> next; //apuntador al nodo siguiente
     public Node<T> prev;//apuntador al nodo siguiente
+    public Integer priority;// 1-Alta,2-media y 3-baja
 
     public Node(T data, Node<T> next) {
         this.data = data;
@@ -20,6 +21,14 @@ public class Node<T> {
         this.data = null;
         this.next = null;
         this.next = this.prev = null;
+    }
+
+    public Node(T element, Integer priority) {
+
+        this.data = element;
+        this.priority = priority;
+        this.next = null;
+
     }
 
 
