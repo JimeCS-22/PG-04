@@ -25,12 +25,15 @@ public class LinkedStack<T> implements MyStack<T> {
 
     @Override
     public boolean isEmpty() {
+
         return top == null;
     }
 
     @Override
     public T peek() throws StackException {
-        return top();
+        if (isEmpty())
+            throw new StackException("Linked Stack is empty");
+        return top.data;
     }
 
     @Override
@@ -42,10 +45,10 @@ public class LinkedStack<T> implements MyStack<T> {
 
     @Override
     public void push(T element) throws StackException {
-        Node<T> newNode = new Node<T>(element);
-        if (!isEmpty())
-            newNode.next = top;
-        top = newNode;
+
+        Node<T> node = new Node<>(element);
+        node.next = top;
+        top = node;
         size++;
     }
 
@@ -53,10 +56,10 @@ public class LinkedStack<T> implements MyStack<T> {
     public T pop() throws StackException {
         if(isEmpty())
             throw new StackException("Linked Stack is empty");
-        T popped = top.data;
+        T data = top.data;//elemento del tope de la pila
         top = top.next;
-        size--;
-        return popped;
+        size--;//al eliminar un elemento, decremento el contador
+        return data;//la data del nodo eliminado
     }
 
     @Override

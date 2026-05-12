@@ -19,7 +19,9 @@ public class Node<T> {
     public Node() {
         this.data = null;
         this.next = null;
+        this.next = this.prev = null;
     }
+
 
     public T getData() {
         return data;
