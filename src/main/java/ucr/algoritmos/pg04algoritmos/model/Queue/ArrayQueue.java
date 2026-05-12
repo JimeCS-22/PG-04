@@ -39,16 +39,26 @@ public class ArrayQueue<T> implements MyQueue<T> {
     //Revisar
     @Override
     public int indexOf(T element) throws QueueException {
-        if(isEmpty()) throw new QueueException("Array Queue is empty");
-        int pos = 0;
-        int i = (front + 1) & n;
-        while (i != (rear + 1) % n) {
-            if ((data[i] == null && element == null) || (data[i] != null && data[i].equals(element)))
-                return pos;
-            i = (i + 1) % n;
-            pos++;
+        if (isEmpty())
+            throw new QueueException("Array Queue is empty");
+
+        ArrayQueue<T> aux = new ArrayQueue<>(size());
+        int index =0;
+        int pos = -1;
+        while (!isEmpty()) {
+            if (equals(front(), element)){
+                pos = index;
+            }
+
+            aux.enQueue(deQueue());
+            index++;
         }
-        return -1; // no encontrado
+
+        while (!aux.isEmpty()) {
+
+            enQueue(aux.deQueue());
+        }
+        return pos;
     }
 
 
@@ -133,7 +143,20 @@ public class ArrayQueue<T> implements MyQueue<T> {
 
     @Override
     public boolean contains(T element) throws QueueException {
-        return indexOf(element) != -1;
+        if (isEmpty()) throw new QueueException("Array Queue is empty");
+        ArrayQueue<T> aux = new ArrayQueue<>(size());
+        boolean finded = false;
+        while (!isEmpty()) {
+            if(equals(front(), element)) {
+                finded = true;
+            }
+            aux.enQueue(deQueue());
+        }
+        //Al final dejamos el tda cola en su estado original
+        while(!aux.isEmpty()) {
+            enQueue(aux.deQueue());
+        }
+        return finded;
     }
 
     @Override
@@ -170,5 +193,9 @@ public class ArrayQueue<T> implements MyQueue<T> {
         }
         sb.append(" ➡️ REAR");
         return sb.toString();
+    }
+
+    private boolean equals(T a, T b) {
+        return a == null ? b == null : a.equals(b);
     }
 }

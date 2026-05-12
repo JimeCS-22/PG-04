@@ -33,15 +33,24 @@ public class LinkedQueue<T> implements MyQueue<T> {
         if (isEmpty())
             throw new QueueException("Linked Queue is empty");
 
-        int index = 0;
-        Node<T> current = front;
-        while (current != null) {
-            if ((current.data == null && element == null) || (current.data != null && current.data.equals(element)))
-                return index;
-            current = current.next;
+        LinkedQueue<T> aux = new LinkedQueue<>();
+        int index = 1;
+        int pos = -1;
+        while (!isEmpty()) {
+
+            if (equals(front(), element)){
+                pos = index;
+            }
+
+            aux.enQueue(deQueue());
             index++;
         }
-        return -1;
+
+        while (!aux.isEmpty()) {
+
+            enQueue(aux.deQueue());
+        }
+        return pos;
     }
 
     @Override
@@ -82,7 +91,20 @@ public class LinkedQueue<T> implements MyQueue<T> {
 
     @Override
     public boolean contains(T element) throws QueueException {
-        return indexOf(element) != -1;
+        if (isEmpty()) throw new QueueException("Linked Queue is empty");
+        LinkedQueue<T> aux = new LinkedQueue<>();
+        boolean finded = false;
+        while (!isEmpty()) {
+            if(equals(front(), element)) {
+                finded = true;
+            }
+            aux.enQueue(deQueue());
+        }
+        //Al final dejamos el tda cola en su estado original
+        while(!aux.isEmpty()) {
+            enQueue(aux.deQueue());
+        }
+        return finded;
     }
 
     //Peek y Front son lo mismo
@@ -120,5 +142,9 @@ public class LinkedQueue<T> implements MyQueue<T> {
         }
         sb.append(" ➡️ REAR");
         return sb.toString();
+    }
+
+    private boolean equals(T a, T b) {
+        return a == null ? b == null : a.equals(b);
     }
 }

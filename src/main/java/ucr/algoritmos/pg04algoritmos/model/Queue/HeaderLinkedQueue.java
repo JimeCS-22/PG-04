@@ -39,15 +39,24 @@ public class HeaderLinkedQueue<T> implements MyQueue<T> {
         if (isEmpty())
             throw new QueueException("Linked Queue is empty");
 
-        int index = 0;
-        Node<T> current = front;
-        while (current != null) {
-            if ((current.data == null && element == null) || (current.data != null && current.data.equals(element)))
-                return index;
-            current = current.next;
+        HeaderLinkedQueue<T> aux = new HeaderLinkedQueue<>();
+        int index = 1;
+        int pos = -1;
+        while (!isEmpty()) {
+
+            if (equals(front(), element)){
+                pos = index;
+            }
+
+            aux.enQueue(deQueue());
             index++;
         }
-        return -1;
+
+        while (!aux.isEmpty()) {
+
+            enQueue(aux.deQueue());
+        }
+        return pos;
     }
 
     @Override
@@ -60,7 +69,7 @@ public class HeaderLinkedQueue<T> implements MyQueue<T> {
 
     @Override
     public T deQueue() throws QueueException {
-        if (isEmpty()) throw new QueueException("Linked Queue is empty");
+        if (isEmpty()) throw new QueueException("Header Linked Queue is empty");
 
         T element = front.next.data;
         //Caso 1. Cuando solo hay un elemento
