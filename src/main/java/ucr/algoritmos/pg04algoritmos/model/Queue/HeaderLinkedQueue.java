@@ -2,6 +2,8 @@ package ucr.algoritmos.pg04algoritmos.model.Queue;
 
 import ucr.algoritmos.pg04algoritmos.model.Node;
 
+import java.util.Objects;
+
 /**
 * Esta es la implementación del TDA utilizando un nodo cabecera vacio
 * */
@@ -51,13 +53,8 @@ public class HeaderLinkedQueue<T> implements MyQueue<T> {
     @Override
     public void enQueue(T element) throws QueueException {
         Node<T> newNode = new Node<>(element);
-
-        if (isEmpty()) {
-            front = rear = newNode;
-        } else {
-            rear.next = newNode;
-            rear = newNode;
-        }
+        rear.next = newNode;
+        rear = newNode;
         size++; //Actualizo el contador de elementos encolados
     }
 
@@ -65,13 +62,13 @@ public class HeaderLinkedQueue<T> implements MyQueue<T> {
     public T deQueue() throws QueueException {
         if (isEmpty()) throw new QueueException("Linked Queue is empty");
 
-        T element = front.data;
+        T element = front.next.data;
         //Caso 1. Cuando solo hay un elemento
-        if(front == rear) clear();
+        if(front.next == rear) clear();
 
         //Caso 2. Cuando hay más de un elemento
         else {
-            front = front.next;
+            front.next = front.next.next;
         }
         size--;
         return element;
@@ -86,32 +83,45 @@ public class HeaderLinkedQueue<T> implements MyQueue<T> {
 
     @Override
     public boolean contains(T element) throws QueueException {
-        return indexOf(element) != -1;
+        if (isEmpty()) throw new QueueException("Header Linked Queue is empty");
+        HeaderLinkedQueue<T> aux = new HeaderLinkedQueue<>();
+        boolean finded = false;
+        while (!isEmpty()) {
+            if(equals(front(), element)) {
+                finded = true;
+            }
+            aux.enQueue(deQueue());
+        }
+        //Al final dejamos el tda cola en su estado original
+        while(!aux.isEmpty()) {
+            enQueue(aux.deQueue());
+        }
+        return finded;
     }
 
     //Peek y Front son lo mismo
     @Override
     public T peek() throws QueueException {
-        if (isEmpty()) throw new QueueException("Linked Queue is empty");
-        return front.data;
+        if (isEmpty()) throw new QueueException("Header Linked Queue is empty");
+        return front.next.data;
     }
 
     @Override
     public T front() throws QueueException {
-        if (isEmpty()) throw new QueueException("Linked Queue is empty");
-        return front.data;
+        if (isEmpty()) throw new QueueException("Header Linked Queue is empty");
+        return front.next.data;
     }
 
     @Override
     public String toString(){
-        if(isEmpty()) return "Array Queue is empty";
-        StringBuilder sb = new StringBuilder("FRONT ➡️ ");
+        if(isEmpty()) return "Header Linked Queue is empty";
+        StringBuilder sb = new StringBuilder("FRONT ➡️ [] ➡️ ");
         HeaderLinkedQueue<T> auxQueue = new HeaderLinkedQueue<>();
         try {
             while(!isEmpty()) {
                 sb.append("[").append(peek()).append("] ");
                 auxQueue.enQueue(deQueue());
-                if (!isEmpty()) sb.append(", ");
+                if (!isEmpty()) sb.append(" ➡️ ");
             }
 
             //Al final dejamos la cola en su estado original
@@ -124,5 +134,8 @@ public class HeaderLinkedQueue<T> implements MyQueue<T> {
         }
         sb.append(" ➡️ REAR");
         return sb.toString();
+    }
+    private boolean equals(T a, T b) {
+        return a == null ? b == null : a.equals(b);
     }
 }
