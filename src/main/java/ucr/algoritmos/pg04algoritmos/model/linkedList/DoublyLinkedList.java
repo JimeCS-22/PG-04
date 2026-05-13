@@ -25,6 +25,14 @@ public class DoublyLinkedList<T> implements List<T> {
         return tail;
     }
 
+    public void setHead(Node<T> head) {
+        this.head = head;
+    }
+
+    public void setTail(Node<T> tail) {
+        this.tail = tail;
+    }
+
     @Override
     public int size() throws ListException {
 
