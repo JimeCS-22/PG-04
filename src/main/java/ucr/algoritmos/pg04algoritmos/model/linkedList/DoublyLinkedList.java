@@ -395,4 +395,46 @@ public class DoublyLinkedList<T> implements List<T> {
         }
         return null;
     }
+
+    /**
+     * Metodo 2: metodo addAtPosK del examen 1
+     * Jimena Calvo Soto C4L408
+     *El método deberá insertar un nuevo nodo con el dato en la posición k (basada en 1).
+     * */
+
+    public void addAtPosK(T data, int k){
+        Node<T> node = new Node<>(data);
+
+        if (isEmpty()) {
+            head = node;
+            tail = node;
+            return;
+        }
+
+        if (k <= 1) {
+            node.next = head;
+            head.prev = node;
+            head = node;
+            return;
+        }
+
+        Node<T> aux = head;
+        int pos = 1;
+
+        while (aux.next != null && pos < k - 1) {
+            aux = aux.next;
+            pos++;
+        }
+
+        node.next = aux.next;
+        node.prev = aux;
+
+        if (aux.next != null) {
+            aux.next.prev = node;
+        } else {
+            tail = node;
+        }
+
+        aux.next = node;
+    }
 }

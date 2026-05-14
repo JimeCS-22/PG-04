@@ -338,4 +338,26 @@ public class LinkedList<T> implements List<T> {
         }
         return null;
     }
+
+    /**
+     *Metodo 1: metodo de reverse del Examen
+     * Jimena Calvo Soto C4L408
+     * Tiene que recorrer la lista al reves
+     * */
+
+    public void reverse(){
+
+        Node<T> prev = null;//Nodo que sea anterior = null
+        Node<T> aux = head;//Nodo que sea aux = head
+        tail = head;//El fin tiene que ser la cabeza
+
+        while (aux != null) {
+            Node<T> next = aux.next;//Nodo que sea siguiente = actual.siguiente
+            aux.next = prev;//El aux. siguiente = al nodo anterior
+            prev = aux;//El nodo anterior = aux
+            aux = next;//El nodo aux = next
+        }
+
+        head = prev;//La cabeza tiene que ser el anterior
+    }
 }
