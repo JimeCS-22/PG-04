@@ -405,36 +405,38 @@ public class DoublyLinkedList<T> implements List<T> {
     public void addAtPosK(T data, int k){
         Node<T> node = new Node<>(data);
 
+        //Primera validación, es si esta vacio
         if (isEmpty()) {
             head = node;
             tail = node;
             return;
         }
 
+        //Segunda validacion:si K es menor que 1
         if (k <= 1) {
-            node.next = head;
-            head.prev = node;
-            head = node;
+            node.next = head;//El nodo.siguiente se le asigna a head
+            head.prev = node;//EL head.prev se le asigna node
+            head = node;//El head = nodde
             return;
         }
 
-        Node<T> aux = head;
-        int pos = 1;
+        Node<T> aux = head;//Un nodo auxiliar que se le asigna la cabeza
+        int pos = 1;//Posicion en 1
 
         while (aux.next != null && pos < k - 1) {
-            aux = aux.next;
-            pos++;
+            aux = aux.next;//Al aux se le asigna el aux.siguiente
+            pos++;//Se incrementa la pos
         }
 
-        node.next = aux.next;
-        node.prev = aux;
+        node.next = aux.next;//El nodo siguiente se le asigna el auxiliar. siguiente
+        node.prev = aux;//El nodo anterior se le asigna el aux
 
         if (aux.next != null) {
-            aux.next.prev = node;
+            aux.next.prev = node;//El aux. siguiente.anterior se le asigna node
         } else {
-            tail = node;
+            tail = node;//EL fin se le asigna a node
         }
 
-        aux.next = node;
+        aux.next = node;//El aux.siguiente se le asigna node
     }
 }
