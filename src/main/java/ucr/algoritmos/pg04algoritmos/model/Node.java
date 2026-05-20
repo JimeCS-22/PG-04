@@ -60,13 +60,95 @@ public class Node<T> {
             this.referencia = referencia;
         }
 
-        public String getPosicion() { return posicion; }
-        public String getValor() { return valor; }
-        public String getReferencia() { return referencia; }
+        public String getPosicion() {
+            return posicion;
+        }
+
+        public String getValor() {
+            return valor;
+        }
+
+        public String getReferencia() {
+            return referencia;
+        }
+
         //for the table
         public void setPosicion(String posicion) {
             this.posicion = posicion;
         }
     }
 
+    //Para el nodo circular PG-04
+    public static class CircularNodeData {
+
+        private int indexOf;
+        private int data;
+        private int nextData;
+        private int prevData;
+        private int headData;
+        private int tailData;
+
+        public CircularNodeData() {
+        }
+
+        public CircularNodeData(int indexOf, int data, int nextData,
+                                int prevData, int headData, int tailData) {
+
+            this.indexOf = indexOf;
+            this.data = data;
+            this.nextData = nextData;
+            this.prevData = prevData;
+            this.headData = headData;
+            this.tailData = tailData;
+        }
+
+        public int getIndexOf() {
+            return indexOf;
+        }
+
+        public void setIndexOf(int indexOf) {
+            this.indexOf = indexOf;
+        }
+
+        public int getData() {
+            return data;
+        }
+
+        public void setData(int data) {
+            this.data = data;
+        }
+
+        public int getNextData() {
+            return nextData;
+        }
+
+        public void setNextData(int nextData) {
+            this.nextData = nextData;
+        }
+
+        public int getPrevData() {
+            return prevData;
+        }
+
+        public void setPrevData(int prevData) {
+            this.prevData = prevData;
+        }
+
+        public int getHeadData() {
+            return headData;
+        }
+
+        public void setHeadData(int headData) {
+            this.headData = headData;
+        }
+
+        public int getTailData() {
+            return tailData;
+        }
+
+        public void setTailData(int tailData) {
+            this.tailData = tailData;
+        }
+
+    }
 }

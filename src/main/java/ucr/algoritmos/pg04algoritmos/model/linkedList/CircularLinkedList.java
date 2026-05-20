@@ -25,6 +25,25 @@ public class CircularLinkedList<T> implements List<T> {
         return tail;
     }
 
+    //para la tabla
+    public Node<T> getPrev(int value) throws ListException {
+
+        if(isEmpty()) throw new ListException("Circular Linked List is empty");
+
+        Node<T> aux = head;
+
+        do {
+
+            if(aux.next.data.equals(value) ) {
+                return aux;
+            }
+
+            aux = aux.next;
+
+        } while(aux != head);
+
+        return null;
+    }
     @Override
     public int size() throws ListException {
         if (isEmpty())
@@ -55,6 +74,7 @@ public class CircularLinkedList<T> implements List<T> {
         if (head == null) {
             head = node;
             tail = node;
+
         } else {
             tail.next = node;
             tail = node; //Dejo tail en el ultimo nodo
@@ -65,11 +85,20 @@ public class CircularLinkedList<T> implements List<T> {
 
     @Override
     public void addFirst(T element) {
-        Node<T> node = new Node<>(element);
-        node.next = head;
-        head = node; //Porque el nuevo queda  de primero
-        //Hago el enlace circular
-        tail.next = head;
+        Node<T> newNode = new Node<>(element);
+
+        if(isEmpty()){
+
+            head = tail = newNode;
+            tail.next = head;
+
+        }else{
+
+            newNode.next = head;
+            head = newNode;
+
+            tail.next = head;//hago enlace circular
+        }
     }
 
     @Override

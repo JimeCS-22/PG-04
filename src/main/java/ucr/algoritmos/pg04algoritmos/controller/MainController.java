@@ -1,6 +1,5 @@
 package ucr.algoritmos.pg04algoritmos.controller;
 
-import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -12,53 +11,21 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import ucr.algoritmos.pg04algoritmos.model.*;
 import ucr.algoritmos.pg04algoritmos.model.Node.*;
+import ucr.algoritmos.pg04algoritmos.model.linkedList.CircularDoublyLinkedList;
+import ucr.algoritmos.pg04algoritmos.model.linkedList.CircularLinkedList;
 import ucr.algoritmos.pg04algoritmos.model.linkedList.DoublyLinkedList;
-import ucr.algoritmos.pg04algoritmos.model.linkedList.LinkedList;
 import ucr.algoritmos.pg04algoritmos.model.linkedList.ListException;
-import ucr.algoritmos.pg04algoritmos.util.BigIntegerSpinnerValueFactory;
 
-import java.math.BigInteger;
-import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
+import java.util.Random;
 
 public class MainController {
 
-    // TAB: Miller-Rabin
     @FXML private TabPane mainTabs;
-    @FXML private Spinner<BigInteger> spParams;
-    @FXML private Canvas canvasMiller;
-    @FXML private Button btnMillerRabin;
-    @FXML private TextField txfBigInteger;
-    @FXML private Button btnClean;
-    @FXML private Button btnCleanField;
-    @FXML private ListView<String> listViewOperations;
 
-    @FXML private TableView<MillerRabinResult> tableResults;
-    @FXML private TableColumn<MillerRabinResult, String> colNumber;
-    @FXML private TableColumn<MillerRabinResult, String> colResult;
-
-    //TAB: Random Search
-    @FXML private Button btnCleanSearch;
-    @FXML private Slider sliderParaSearch;
-    @FXML private TableColumn<RandomSearchResult, Integer> colValueSearch;
-    @FXML private TableColumn<RandomSearchResult, Integer> colIndexSearch;
-    @FXML private TableColumn<RandomSearchResult, Integer> colAttemptsSearch;
-    @FXML private TableColumn<RandomSearchResult, Integer> colMaxAttemptsSearch;
-    @FXML private TextField txtValueSearch;
-    @FXML private Button btnRandomSearchSearch;
-    @FXML private TextField arrayTextSearch;
-    @FXML private Canvas canvasSearch;
-    @FXML private Button btnGenerateSearch;
-    @FXML private TextField txtMaxAttemptsSearch;
-    @FXML private ListView<String> listViewOperationsSearch;
-    @FXML private TableView<RandomSearchResult> tableResultsSearch;
-
-    // Random Search: estado
-    private int[] randomArraySearch = new int[0];
-    private final ObservableList<RandomSearchResult> randomSearchResults = FXCollections.observableArrayList();
-
-    // TAB: Linked List
+    // TAB: Circular Linked List
     @FXML private TextField textFieldValue;
     @FXML private Button btnAgregarInicio;
     @FXML private Button btnAgregarFinal;
@@ -66,39 +33,36 @@ public class MainController {
     @FXML private Button btnDelete;
     @FXML private Button btnClearList;
     @FXML private Canvas canvasListDraw;
-    @FXML private TableView<NodeInfo> tableLinkedList;
-    @FXML private TableColumn<NodeInfo, String> colPosition;
-    @FXML private TableColumn<NodeInfo, String> colValue;
-    @FXML private TableColumn<NodeInfo, String> colInsert;
     @FXML private ListView<String> listViewOperationsList;
     @FXML private TextArea txAreaNodeStructure;
     @FXML private Label txFieldNodeRepre;
     @FXML private Label txtInsertadoIn;
-
-    // Linked List: estado del modelo
-    private LinkedList<String> list;
-    private ObservableList<NodeInfo> dataTable;
+    @FXML
+    private TableColumn<Product,Integer> colIdDoubly;
+    @FXML
+    private TableColumn<CircularNodeData,Integer> colHeadData;
+    @FXML
+    private TableColumn<CircularNodeData,Integer> colRegDate;
+    @FXML
+    private TableColumn<CircularNodeData,Integer> colIndexOf;
+    @FXML
+    private TableColumn<CircularNodeData,Integer> colNombre1;
+    @FXML
+    private TableColumn<CircularNodeData,Integer> colNextData;
+    @FXML
+    private TableColumn<CircularNodeData,Integer> colTailData;
+    private CircularLinkedList<Integer> list;
+    @FXML
+    private TableView<CircularNodeData> tableCircularLinkedList;
     private int contadorPosicion;
 
-
-    // Variables
-    BigInteger min = new BigInteger("1");
-    BigInteger max = new BigInteger("999999999999999999");
-    BigInteger initial = new BigInteger("1000000000000");
-    BigInteger step = new BigInteger("1");
-    private final SecureRandom random = new SecureRandom();
-
-    //Lista Doble enlazada
+    //TAB: Circular Doubly Linked List
     @FXML
     private Button btnClearListDoble;
-    @FXML
-    private Label txtInsertadoIn1;
     @FXML
     private Button btnSearchDoble;
     @FXML
     private Canvas canvasListDoubly;
-    @FXML
-    private TableColumn colPositionDoubly;
     @FXML
     private Button btnEliminarInicio;
     @FXML
@@ -108,233 +72,182 @@ public class MainController {
     @FXML
     private Label txtInsertar;
     @FXML
-    private TableColumn colPuesto;
-    @FXML
     private Button btnAgregarDoble;
     @FXML
     private ListView listViewOperationsListDoubly;
     @FXML
     private TextField txtId;
     @FXML
-    private Button btnUltimo;
-    @FXML
-    private Button btnAnterior;
-    @FXML
-    private TableView colID;
-    @FXML
     private Button btnEliminarDoble;
     @FXML
-    private TableColumn colNombre;
-    @FXML
-    private TableColumn colFechaIngreso;
-    @FXML
-    private ChoiceBox bxJobPosition;
+    private TableColumn<Product,String> colNombre;
     @FXML
     private Button btnEliminarFinal;
-    @FXML
-    private Button btnPrimero;
-    @FXML
-    private DatePicker dpHireDate;
-    @FXML
-    private Button btnSiguiente;
 
     // DoublyLinkedList: estado
-    private DoublyLinkedList<Employee> doublyList = new DoublyLinkedList<>();
-    private final ObservableList<Employee> doublyData = FXCollections.observableArrayList();
-    private Node<Employee> currentEmployeeNode = null;
+    private CircularDoublyLinkedList<Product> doublyList = new CircularDoublyLinkedList<>();
+    private final ObservableList<Product> doublyData = FXCollections.observableArrayList();
+    private Node<Product> currentProductNode = null;
     private final DateTimeFormatter hireFmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     @FXML
     private TextArea txAreaNodeRepreDoubly;
+    @FXML
+    private Button btnSiguiente1;
+    @FXML
+    private Button btnAgregarDoble11;
+    @FXML
+    private Button btnAnterior1;
+    @FXML
+    private TableColumn<Product,Integer> colStock;
+    @FXML
+    private TableColumn<Integer,Integer> colPositionDoubly1;
+    @FXML
+    private TableColumn<Product,LocalDate> colFechaIngreso111;
+    @FXML
+    private Button btnAnterior11;
+    @FXML
+    private Canvas canvasListDoubly1;
+    @FXML
+    private Canvas canvasListDoubly11;
+    @FXML
+    private Label txtInsertadoIn11;
+    @FXML
+    private TextField txtId11;
+    @FXML
+    private TableColumn<CircularNodeData,Integer> colPrevData;
+    @FXML
+    private TextArea txAreaNodeRepreDoubly11;
+    @FXML
+    private Label txtInsertadoInDoubly;
+    @FXML
+    private ListView listViewOperationsListDoubly11;
+    @FXML
+    private TextArea txAreaNodeStructureD1;
+    @FXML
+    private TextField txtStock;
+    @FXML
+    private Button btnClearListDoble1;
+    @FXML
+    private Label txtInsertar1;
 
+    @FXML
+    private Label txtInsertadoIn111;
+    @FXML
+    private Button btnEliminarFinal11;
+    @FXML
+    private TextField txtPrice;
+    @FXML
+    private Button btnOrdenarNombre;
+
+    @FXML
+    private Button btnSiguiente11;
+    @FXML
+    private TableColumn colFechaIngreso1111;
+    @FXML
+    private Button btnClearListDoble11;
+    @FXML
+    private TableView colID1;
+    @FXML
+    private TextArea txAreaNodeStructureD11;
+    @FXML
+    private Button btnAgregarAleatorio;
+    @FXML
+    private ChoiceBox<String> bxType;
+    @FXML
+    private TableColumn colPuesto11;
+    @FXML
+    private TableColumn<CircularNodeData,Integer> colData;
+    @FXML
+    private TableColumn colFechaIngreso11;
+    @FXML
+    private Button btnAgregarDoble1;
+    @FXML
+    private DatePicker dpHireDate11;
+    @FXML
+    private TableColumn colPuesto1;
+    @FXML
+    private Button btnEliminarInicio11;
+    @FXML
+    private TableColumn<Product,String> colType;
+    @FXML
+    private Button btnEliminarDoble1;
+    @FXML
+    private Button btnSearchDoble11;
+    @FXML
+    private Button btnSearchDoble1;
+    @FXML
+    private Label txtInsertar11;
+    @FXML
+    private ListView listViewOperationsListDoubly1;
+    @FXML
+    private DatePicker dpRegisterDate;
+    @FXML
+    private TextArea txAreaNodeRepreDoubly1;
+    @FXML
+    private Button btnEliminarFinal1;
+    @FXML
+    private TableColumn colNombre11;
+    @FXML
+    private TableColumn<Product,Double> colPrice;
+    @FXML
+    private Button btnEliminarInicio1;
+    @FXML
+    private TableColumn colPositionDoubly11;
+    @FXML
+    private ChoiceBox bxJobPosition11;
+    @FXML
+    private TableView colID11;
+    @FXML
+    private TextField txtName11;
+    @FXML
+    private Button btnEliminarDoble11;
+    @FXML
+    private TableView<Product> tableCircularDoubly;
+    private ObservableList<CircularNodeData> dataTable;//CircularLinkedList
+    private ObservableList<Product> dataTableDoubly;//Circular Doubly Linked List
+    @FXML
+    private Button btnOrdenarStock;
 
     @FXML
     public void initialize() {
-        setupMillerRabin();
-        setupLinkedListTab();
-        setupRandomSearch();
-        setupDoublyLinkedListTab();
+        setupCircularLinkedList();
+        setupCircularDoublyLinkedList();
+        //setupRandomSearch();
+        //setupDoublyLinkedListTab();
     }
+    ///Methods Controller for Circular Linked List - Camila
+    private void setupCircularLinkedList() {
+        list = new CircularLinkedList<>();
+        dataTable = FXCollections.observableArrayList();
+        contadorPosicion = 0; // atributo en tu Controller
 
-    private void setupMillerRabin() {
-        spParams.setValueFactory(
-                new BigIntegerSpinnerValueFactory(min, max, initial, step)
-        );
+        colIndexOf.setCellValueFactory(new PropertyValueFactory<>("indexOf"));
+        colData.setCellValueFactory(new PropertyValueFactory<>("data"));
+        colNextData.setCellValueFactory(new PropertyValueFactory<>("nextData"));
+        colPrevData.setCellValueFactory(new PropertyValueFactory<>("prevData"));
+        colHeadData.setCellValueFactory(new PropertyValueFactory<>("headData"));
+        colTailData.setCellValueFactory(new PropertyValueFactory<>("tailData"));
 
-        spParams.valueProperty().addListener((obs, oldVal, newVal) -> {
-            if (newVal != null) {
-                txfBigInteger.setText(newVal.toString());
-            }
-        });
-
-        txfBigInteger.textProperty().addListener((obs, oldVal, newVal) -> {
-            clearCanvasMiller();
-        });
-
-        colNumber.setCellValueFactory(data ->
-                new SimpleStringProperty(data.getValue().getNumber()));
-
-        colResult.setCellValueFactory(data ->
-                new SimpleStringProperty(data.getValue().getResult()));
-
-        colResult.setCellFactory(column -> new TableCell<>() {
-            @Override
-            protected void updateItem(String item, boolean empty) {
-                super.updateItem(item, empty);
-
-                if (empty || item == null) {
-                    setText(null);
-                    setStyle("");
-                } else {
-                    setText(item);
-
-                    if (item.contains("Probablemente Primo")) {
-                        setStyle("-fx-background-color: #b6ffb3; -fx-text-fill: black;");
-                    } else {
-                        setStyle("-fx-background-color: #ffb3b3; -fx-text-fill: black;");
-                    }
-                }
-            }
-        });
-
-        colNumber.setCellFactory(column -> new TableCell<>() {
-            @Override
-            protected void updateItem(String item, boolean empty) {
-                super.updateItem(item, empty);
-
-                if (empty || item == null) {
-                    setText(null);
-                    setStyle("");
-                } else {
-                    setText(item);
-                    setStyle("-fx-font-weight: bold;");
-                }
-            }
-        });
-
-        btnMillerRabin.setOnAction(e -> runMillerRabin());
-        btnClean.setOnAction(e -> reset());
-        btnCleanField.setOnAction(e -> txfBigInteger.setText(""));
-    }
-
-    private void runMillerRabin() {
-
-        String input = txfBigInteger.getText().trim();
-
-        if (input.isEmpty()) {
-            showAlert("Error", "Debe ingresar un número");
-            return;
-        }
-
-        try {
-            Probabilistic p = new Probabilistic();
-            String result = p.millerRabin(input);
-
-            boolean isPrime = result.contains("probably prime");
-
-            ObservableList<String> items = FXCollections.observableArrayList(listViewOperations.getItems());
-            items.add(input + " → " + (isPrime ? "✔ Primo" : "✘ No primo"));
-            listViewOperations.setItems(items);
-
-            tableResults.getItems().add(
-                    new MillerRabinResult(
-                            input,
-                            isPrime ? "Probablemente Primo" : "No Primo"
-                    )
-            );
-
-            drawCircle(input, isPrime);
-
-        } catch (Exception e) {
-            showAlert("Error", "Número inválido");
-        }
-    }
-
-    private void drawCircle(String number, boolean isPrime) {
-
-        GraphicsContext gc = canvasMiller.getGraphicsContext2D();
-
-        clearCanvasMiller();
-
-        double size = 120;
-
-        double x = (canvasMiller.getWidth() - size) / 2;
-        double y = (canvasMiller.getHeight() - size) / 2;
-
-        gc.setFill(isPrime ? Color.LIMEGREEN : Color.RED);
-        gc.fillOval(x, y, size, size);
-
-        gc.setStroke(Color.BLACK);
-        gc.strokeOval(x, y, size, size);
-
-        gc.setFill(Color.WHITE);
-        gc.setFont(new Font(14));
-
-        String text = number.length() > 10 ? number.substring(0, 10) + "..." : number;
-
-        double textWidth = text.length() * 7;
-        double textX = x + (size - textWidth) / 2;
-        double textY = y + size / 2;
-
-        gc.fillText(text, textX, textY);
-    }
-
-    private void clearCanvasMiller() {
-        GraphicsContext gc = canvasMiller.getGraphicsContext2D();
-        gc.clearRect(0, 0, canvasMiller.getWidth(), canvasMiller.getHeight());
-    }
-
-    @FXML
-    private void generarAleatorio() {
-        BigInteger rand = new BigInteger(50, random);
-        txfBigInteger.setText(rand.toString());
-    }
-
-    private void reset() {
-        listViewOperations.getItems().clear();
-        tableResults.getItems().clear();
-        clearCanvasMiller();
-    }
-
-    private void showAlert(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
-
-    //Methods Controller for Linked List - Camila
-
-    private void setupLinkedListTab() {
-        //atributos para Linked List
-         list = new LinkedList<>();
-         dataTable = FXCollections.observableArrayList();
-         contadorPosicion = 0; // atributo en tu Controller
-
-        colPosition.setCellValueFactory(new PropertyValueFactory<>("posicion"));
-        colValue.setCellValueFactory(new PropertyValueFactory<>("valor"));
-        colInsert.setCellValueFactory(new PropertyValueFactory<>("referencia"));
-        tableLinkedList.setItems(dataTable);
+        tableCircularLinkedList.setItems(dataTable);
         //config botones de operaciones
         btnAgregarInicio.setOnAction(e -> addFirst());
         btnAgregarFinal.setOnAction(e -> addLast());
+        btnAgregarAleatorio.setOnAction(e-> addRandom());
         btnSearch.setOnAction(e -> runSearchInLinkedList());
         btnDelete.setOnAction(e -> remove());
         btnClearList.setOnAction(e -> cleanListTab());
 
     }
 
-
-    private void addFirst() {
-
-        String input = textFieldValue.getText().trim();
-
-        if (input.isEmpty()) {
-            showAlert("Error", "Debe ingresar un valor");
-            return;
-        }
+    private void addRandom() {
 
         try {
+            int input = new Random().nextInt(50);
+            textFieldValue.setText(input+"");
+            if (  textFieldValue.getText()==null) {
+                showAlert("Error", "Debe ingresar un número positivo");
+                return;
+            }
             list.addFirst(input);
             String result = list.toString();
             //mostrar la Representación de la lista
@@ -344,22 +257,55 @@ public class MainController {
             // colocar el registro de operaciones
             registrarOperacion("addFirst", input, "HEAD → [" + input + "] → ...");
             //llenado tabla
-            desplazarPosiciones();
+            //desplazarPosiciones();
             // agregar fila a la tabla
-            dataTable.add(0, new NodeInfo("1", input, "Inicio"));
-            drawLinkedList(input);//dibujar la acción de addFirst en el Canvas
+
+            actualizarTablaCircular();
+            drawLinkedList();//dibujar la acción de addFirst en el Canvas
 
         } catch (Exception e) {
             showAlert("Error", "Valor inválido");
+        }
+    }
+
+
+    private void addFirst() {
+
+        try {
+            int input = Integer.parseInt(textFieldValue.getText().trim());
+
+            if (input < 0 || textFieldValue.getText()==null) {
+                showAlert("Error", "Debe ingresar un número positivo");
+                return;
+            }
+
+            list.addFirst(input);
+            String result = list.toString();
+            //mostrar la Representación de la lista
+            txFieldNodeRepre.setText(result);
+            txtInsertadoIn.setText("al inicio: " + input);
+
+            // colocar el registro de operaciones
+            registrarOperacion("addFirst", input, "HEAD → [" + input + "] → ...");
+            //llenado tabla
+            //desplazarPosiciones();
+            // agregar fila a la tabla
+
+            actualizarTablaCircular();
+            drawLinkedList();//dibujar la acción de addFirst en el Canvas
+
+        } catch (Exception e) {
+            showAlert("Error", "Valor inválido");
+            e.printStackTrace();
         }
 
     }
 
     private void addLast() {
 
-            String input = textFieldValue.getText().trim();
+            int input = Integer.parseInt(textFieldValue.getText().trim());
 
-            if (input.isEmpty()) {
+            if (input < 0) {
                 showAlert("Error", "Debe ingresar un valor");
                 return;
             }
@@ -369,31 +315,34 @@ public class MainController {
                 txFieldNodeRepre.setText(list.toString());
                 txtInsertadoIn.setText("al final: "+input );
 
-                registrarOperacion("addLast", input, "... → [" + input + "] → NULL");
+                registrarOperacion("addLast", input, "... → [" + input + "] → HEAD");
 
                 contadorPosicion++;
-                int posicion = list.indexOf(input); //String.valueOf(posicion)
-                dataTable.add(new NodeInfo(
-                        String.valueOf(posicion),
-                        input,
-                        "Final"
-                ));
 
-                drawLinkedList(input);
+                // agregar fila a la tabla
+
+                actualizarTablaCircular();
+                drawLinkedList();
 
             } catch (Exception e) {
                 showAlert("Error", "Valor inválido");
             }
 
     }
-
+    private void showAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
     private void runSearchInLinkedList() {
 
-        String input = textFieldValue.getText().trim();
+        int input = Integer.parseInt(textFieldValue.getText().trim());
 
         // Validación
-        if (input.isEmpty()) {
-            showAlert("Error", "Debe ingresar un valor a buscar");
+        if (input < 0 || textFieldValue.getText().isBlank()) {
+            showAlert("Error", "Debe ingresar un número positivo");
             return;
         }
 
@@ -422,8 +371,8 @@ public class MainController {
                         "search(" + input + ") → encontrado en posición " + posicion
                 );
 
-                // redibujar lista (TO DO  resaltar el nodo)
-                drawLinkedList(input);
+
+                drawLinkedList();
             }
 
         } catch (Exception e) {
@@ -433,31 +382,32 @@ public class MainController {
     }
 
     private void remove() {
-        String input = textFieldValue.getText().trim();
-
-        if (input.isEmpty()) {
-            showAlert("Error", "Debe ingresar un valor");
-            return;
-        }
-
         try {
+            int input = Integer.parseInt(textFieldValue.getText().trim());
+
+            if (input < 0) {
+                showAlert("Error", "Debe ingresar número positivo");
+                return;
+            }
+
+            //  eliminar de la estructura
             list.remove(input);
-            String result = list.toString();
-            //mostrar la Representación de la lista
-            txFieldNodeRepre.setText(result);
 
-            // colocar el registro de operaciones
-            registrarOperacion("remove",input, "Nodo eliminado");
+            // actualizar representación textual
+            txFieldNodeRepre.setText(list.toString());
 
-            //llenado tabla
-            // agregar fila a la tabla
-            contadorPosicion++;
-            dataTable.removeIf(n -> n.getValor().equals(input));
+            // registrar operación
+            registrarOperacion("remove", input, "Nodo eliminado");
 
-            drawLinkedList(input);//dibujar la acción de addFirst en el Canvas
+            dataTable.clear();
+            actualizarTablaCircular();
+            drawLinkedList();
 
-        } catch (Exception e) {
+        } catch (NumberFormatException e) {
             showAlert("Error", "Valor inválido");
+        } catch (Exception e) {
+            showAlert("Error", "Error al eliminar nodo");
+            e.printStackTrace();
         }
     }
     private void cleanListTab() {
@@ -466,7 +416,7 @@ public class MainController {
         txtInsertadoIn.setText("");
         textFieldValue.setText("");
         listViewOperationsList.getItems().clear();
-        tableLinkedList.getItems().clear();
+        tableCircularLinkedList.getItems().clear();
         clearCanvasList();
     }
 
@@ -474,336 +424,205 @@ public class MainController {
         GraphicsContext gc = canvasListDraw.getGraphicsContext2D();
         gc.clearRect(0, 0, canvasListDraw.getWidth(), canvasListDraw.getHeight());
     }
+    private void actualizarTablaCircular() throws ListException {
+        dataTable.clear();
+        if (list.isEmpty()) return;
 
-    private void drawLinkedList(String input) {
+        Node<Integer> aux = list.getHead();
+        Node<Integer> headNode = list.getHead();
+        Node<Integer> tailNode = list.getTail();
 
+        int head = headNode.data;
+        int tail = tailNode.data;
+
+        int index = 1;
+
+        do {
+            int data = aux.data;
+
+            int next = (aux.next != null) ? aux.next.data : -1;
+
+            int prev = list.getPrev(data).data;
+
+            dataTable.add(new CircularNodeData(
+                    index,
+                    data,
+                    next,
+                    prev,
+                    head,
+                    tail
+            ));
+
+            aux = aux.next;
+            index++;
+
+        } while (aux != headNode);
+    }
+
+
+    private void drawLinkedList() {
         GraphicsContext gc = canvasListDraw.getGraphicsContext2D();
         clearCanvasList();
 
-        // Configuración visual
-        double startX = 50;
+        double startX = 80;
         double startY = canvasListDraw.getHeight() / 2;
         double nodeWidth = 60;
         double nodeHeight = 40;
-        double spacing = 30;
+        double spacing = 40;
 
-        // Colores
         Color nodeColor = Color.web("#1f2a44");
-        Color arrowColor = Color.web("#f5a623");
+        Color arrowColor = Color.web("#3b7ddd");
 
         gc.setFont(Font.font(14));
 
-        // Dibujar HEAD
-        gc.setFill(Color.BLACK);
-        gc.fillText("HEAD", startX - 35, startY + 5);
+        // HEAD
+        gc.setFill(Color.web("#1f2a44"));
+        gc.fillRoundRect(startX - 60, startY - 15, 50, 30, 10, 10);
+        gc.setFill(Color.web("#f5a623"));
+        gc.fillText("HEAD", startX - 45, startY + 5);
 
         double currentX = startX;
-        Node<String> current = list.getHead();
+        Node<Integer> current = list.getHead();
+        if (current == null) return;
 
-        // Recorrer la lista enlazada
-        while (current != null) {
-
-            // Nodo (rectángulo)
+        do {
+            // Nodo
             gc.setFill(nodeColor);
-            gc.fillRect(currentX, startY - nodeHeight / 2, nodeWidth, nodeHeight);
+            gc.fillRoundRect(currentX, startY - nodeHeight / 2, nodeWidth, nodeHeight, 10, 10);
+            gc.setStroke(Color.WHITE);
+            gc.strokeRoundRect(currentX, startY - nodeHeight / 2, nodeWidth, nodeHeight, 10, 10);
 
-            // Borde
-            gc.setStroke(Color.BLACK);
-            gc.strokeRect(currentX, startY - nodeHeight / 2, nodeWidth, nodeHeight);
-
-            // Valor del nodo
             gc.setFill(Color.WHITE);
-            gc.fillText(
-                    current.getData(),
-                    currentX + 15,
-                    startY + 5
-            );
+            gc.fillText(current.getData().toString(), currentX + 20, startY + 5);
 
-            // Flecha al siguiente nodo
-            if (current.getNext() != null) {
+            // Flecha normal
+            if (current.getNext() != list.getHead()) {
                 double arrowStartX = currentX + nodeWidth;
                 double arrowEndX = currentX + nodeWidth + spacing;
 
                 gc.setStroke(arrowColor);
                 gc.setLineWidth(2);
                 gc.strokeLine(arrowStartX, startY, arrowEndX, startY);
-
-                // Punta de la flecha
                 gc.strokeLine(arrowEndX - 5, startY - 5, arrowEndX, startY);
                 gc.strokeLine(arrowEndX - 5, startY + 5, arrowEndX, startY);
             }
 
+            // Flecha de retorno al HEAD
+            if (current.getNext() == list.getHead()) {
+                double arrowStartX = currentX + nodeWidth;
+                double arrowEndX = startX - 10; // un poco antes del HEAD
+                double arrowTopY = startY - 80;
+
+                gc.setStroke(arrowColor);
+                gc.setLineWidth(2);
+
+                // Subir
+                gc.strokeLine(arrowStartX, startY, arrowStartX, arrowTopY);
+                // Ir hacia la izquierda
+                gc.strokeLine(arrowStartX, arrowTopY, arrowEndX, arrowTopY);
+                // Bajar hacia el HEAD
+                gc.strokeLine(arrowEndX, arrowTopY, arrowEndX, startY - nodeHeight / 2);
+
+                // Punta de flecha (más centrada)
+                gc.strokeLine(arrowEndX - 5, startY - nodeHeight / 2 - 5, arrowEndX, startY - nodeHeight / 2);
+                gc.strokeLine(arrowEndX - 5, startY - nodeHeight / 2 + 5, arrowEndX, startY - nodeHeight / 2);
+
+            }
+
             currentX += nodeWidth + spacing;
             current = current.getNext();
-        }
 
-        // Dibujar NULL
-        gc.setFill(Color.BLACK);
-        gc.fillText("NULL", currentX + 10, startY + 5);
+        } while (current != list.getHead());
     }
 
 
-    private void registrarOperacion(String operacion, String valor, String representacion) {
+
+    private void registrarOperacion(String operacion, int valor, String representacion) {
         String texto = operacion + "(" + valor + ")  " + representacion;
         listViewOperationsList.getItems().add(texto);
     }
-    private void desplazarPosiciones() {
-        for (NodeInfo info : dataTable) {
-            int pos = Integer.parseInt(info.getPosicion());
-            info.setPosicion(String.valueOf(pos + 1));
-        }
-    }
 
 
 
-    // TAB: Random Search
-    private static final int VISIBLE = 12;
-    private void setupRandomSearch() {
+    // TAB: Circular Doubly Linked List
 
-        sliderParaSearch.setMin(0);
-        sliderParaSearch.setMax(99);
-        sliderParaSearch.setValue(20);
-        sliderParaSearch.setMajorTickUnit(5);
-        sliderParaSearch.setMinorTickCount(0);
-        sliderParaSearch.setSnapToTicks(true);
-
-        sliderParaSearch.valueProperty().addListener((obs, ov, nv) -> {
-            if (nv != null) txtValueSearch.setText(String.valueOf(nv.intValue()));
-        });
-        txtValueSearch.textProperty().addListener((obs, o, n) -> {
-            if (n == null || n.isBlank()) return;
-            if (!n.matches("\\d+")) return;
-
-            int v = Integer.parseInt(n);
-            int min = (int) sliderParaSearch.getMin();
-            int max = (int) sliderParaSearch.getMax();
-            if (v < min) v = min;
-            if (v > max) v = max;
-
-            if ((int) sliderParaSearch.getValue() != v) sliderParaSearch.setValue(v);
-        });
-
-        // tabla
-        colValueSearch.setCellValueFactory(new PropertyValueFactory<>("value"));
-        colIndexSearch.setCellValueFactory(new PropertyValueFactory<>("index"));
-        colAttemptsSearch.setCellValueFactory(new PropertyValueFactory<>("attempts"));
-        colMaxAttemptsSearch.setCellValueFactory(new PropertyValueFactory<>("maxAttempts"));
-        tableResultsSearch.setItems(randomSearchResults);
-
-        // botones
-        btnGenerateSearch.setOnAction(e -> genArray());
-        btnRandomSearchSearch.setOnAction(e -> doSearch());
-        btnCleanSearch.setOnAction(e -> clearSearch());
-
-        // NO generar al abrir el tab
-        clearCanvasSearch();
-        arrayTextSearch.setText("");
-        txtMaxAttemptsSearch.setText("");
-    }
-
-    private void genArray() {
-        int n = 64;
-        int min = 0, max = 99;
-
-        randomArraySearch = new int[n];
-        for (int i = 0; i < n; i++) {
-            randomArraySearch[i] = min + random.nextInt(max - min + 1);
-        }
-
-        arrayTextSearch.setText(previewArray(randomArraySearch) + "   (n=" + randomArraySearch.length + ")");
-
-        // muestra primeros 12
-        draw(0, -1, "", 0, 0);
-    }
-
-    private void doSearch() {
-        if (randomArraySearch == null || randomArraySearch.length == 0) {
-            showAlert("Error", "Primero presione: Generar Aleatorio.");
-            return;
-        }
-
-        int value, maxAtt;
-        try {
-            value = Integer.parseInt(txtValueSearch.getText().trim());
-            maxAtt = Integer.parseInt(txtMaxAttemptsSearch.getText().trim());
-            if (maxAtt <= 0) {
-                showAlert("Error", "Max Attempts debe ser mayor a 0.");
-                return;
-            }
-        } catch (Exception e) {
-            showAlert("Error", "Valor y Max Attempts deben ser números enteros.");
-            return;
-        }
-
-        Probabilistic p = new Probabilistic();
-        int[] r = p.randomSearch(randomArraySearch, value, maxAtt);
-
-        int idx = r[0];
-        int att = r[1];
-        boolean ok = idx != -1;
-
-        // log
-        String log = "Item[" + value + "] " +
-                (ok
-                        ? "found in index: " + idx + ". Attempts: " + att + "  ✓"
-                        : "not found. Max attempts: " + maxAtt + "  ✗");
-        listViewOperationsSearch.getItems().add(log);
-
-        // tabla
-        randomSearchResults.add(new RandomSearchResult(value, idx, att, maxAtt));
-
-        // mensaje
-        String msg = ok
-                ? "¡VALOR ENCONTRADO EN EL ÍNDICE " + idx + "!"
-                : "VALOR NO ENCONTRADO (Intentos agotados)";
-
-        // dibujar 12 cerca del encontrado
-        int start = ok ? startOf(idx) : 0;
-        draw(start, idx, msg, att, maxAtt);
-    }
-
-    private void clearSearch() {
-        txtValueSearch.clear();
-        txtMaxAttemptsSearch.clear();
-        listViewOperationsSearch.getItems().clear();
-        randomSearchResults.clear();
-        clearCanvasSearch();
-        arrayTextSearch.setText("");
-        randomArraySearch = new int[0];
-    }
-
-    private int startOf(int idx) {
-        int n = randomArraySearch.length;
-        if (n <= VISIBLE) return 0;
-
-        int s = idx - (VISIBLE / 2);
-        if (s < 0) s = 0;
-
-        int maxS = n - VISIBLE;
-        if (s > maxS) s = maxS;
-
-        return s;
-    }
-
-    private void draw(int start, int highlight, String msg, int att, int maxAtt) {
-        GraphicsContext gc = canvasSearch.getGraphicsContext2D();
-
-        // fondo
-        gc.setFill(Color.web("#f2f2f2"));
-        gc.fillRect(0, 0, canvasSearch.getWidth(), canvasSearch.getHeight());
-
-        if (randomArraySearch == null || randomArraySearch.length == 0) return;
-
-        // textos
-        gc.setFont(Font.font(14));
-        gc.setFill(Color.BLACK);
-
-        String vtxt = (txtValueSearch.getText() == null) ? "" : txtValueSearch.getText().trim();
-        if (!vtxt.isBlank()) {
-            gc.fillText("Buscando valor: " + vtxt, 60, 35);
-            if (maxAtt > 0) gc.fillText("Intentos realizados: " + att + " / " + maxAtt, 60, 55);
-        }
-
-        if (msg != null && !msg.isBlank()) {
-            gc.setFill(highlight >= 0 ? Color.web("#0a8f08") : Color.web("#d10000"));
-            gc.fillText(msg, 60, 80);
-        }
-
-        // cajas
-        double x0 = 30, y0 = 110, w = 55, h = 45, gap = 6;
-
-        int win = Math.min(VISIBLE, randomArraySearch.length);
-        int s = Math.max(0, Math.min(start, Math.max(0, randomArraySearch.length - win)));
-
-        gc.setFont(Font.font(13));
-
-        for (int k = 0; k < win; k++) {
-            int i = s + k;
-            double x = x0 + k * (w + gap);
-
-            boolean hi = (i == highlight);
-
-            gc.setFill(hi ? Color.web("#8ef28e") : Color.WHITE);
-            gc.fillRect(x, y0, w, h);
-
-            gc.setStroke(Color.web("#444"));
-            gc.setLineWidth(1.2);
-            gc.strokeRect(x, y0, w, h);
-
-            gc.setFill(Color.BLACK);
-            gc.fillText(String.valueOf(randomArraySearch[i]), x + 18, y0 + 28);
-
-            gc.setFill(Color.web("#777"));
-            gc.fillText("[" + i + "]", x + 14, y0 + 70);
-        }
-    }
-
-    private void clearCanvasSearch() {
-        GraphicsContext gc = canvasSearch.getGraphicsContext2D();
-        gc.clearRect(0, 0, canvasSearch.getWidth(), canvasSearch.getHeight());
-    }
-
-    private String previewArray(int[] arr) {
-        if (arr == null) return "[]";
-        if (arr.length <= 20) return java.util.Arrays.toString(arr);
-
-        StringBuilder sb = new StringBuilder("[");
-        int left = Math.min(12, arr.length);
-        for (int i = 0; i < left; i++) {
-            sb.append(arr[i]);
-            if (i < left - 1) sb.append(", ");
-        }
-        sb.append(", ...]");
-        return sb.toString();
-    }
-
-
-
-    // TAB: Doubly Linked List
-
-    private void setupDoublyLinkedListTab() {
+    private void setupCircularDoublyLinkedList() {
 
         // ChoiceBox puestos (como en imagen 2)
-        bxJobPosition.setItems(FXCollections.observableArrayList(
-                "Informático/a", "Doctor/a", "Docente", "Administrador/a",
-                "Periodista", "Arquitecto/a"
+        bxType.setItems(FXCollections.observableArrayList(
+                "Tecnológicos", "Electrónicos", "Hogar", "Belleza",
+                "Ropa", "Juguetes"
         ));
-        bxJobPosition.getSelectionModel().selectFirst();
+        bxType.getSelectionModel().selectFirst();
 
-        dpHireDate.setValue(LocalDate.now());
+        dpRegisterDate.setValue(LocalDate.now());
 
 
-        colPositionDoubly.setCellValueFactory(new PropertyValueFactory<>("id"));
+        colIdDoubly.setCellValueFactory(new PropertyValueFactory<>("id"));
         colNombre.setCellValueFactory(new PropertyValueFactory<>("name"));
-        colPuesto.setCellValueFactory(new PropertyValueFactory<>("jobPosition"));
-        colFechaIngreso.setCellValueFactory(new PropertyValueFactory<>("hireDate"));
+        colPrice.setCellValueFactory(new PropertyValueFactory<>("price"));
+        colStock.setCellValueFactory(new PropertyValueFactory<>("stock"));
+        colType.setCellValueFactory(new PropertyValueFactory<>("type"));
+        colRegDate.setCellValueFactory(new PropertyValueFactory<>("registerDate"));
 
-        colID.setItems(doublyData);
+        tableCircularDoubly.setItems(doublyData);
 
         // Botones
-        btnAgregarDoble.setOnAction(e -> addEmployeeDoubly());
-        btnSearchDoble.setOnAction(e -> searchEmployeeDoubly());
+        btnAgregarDoble.setOnAction(e -> addDoubly());
+        btnSearchDoble.setOnAction(e -> searchDoubly());
         btnClearListDoble.setOnAction(e -> clearDoublyTab());
 
-        btnPrimero.setOnAction(e -> goFirstEmployee());
-        btnUltimo.setOnAction(e -> goLastEmployee());
-        btnAnterior.setOnAction(e -> goPrevEmployee());
-        btnSiguiente.setOnAction(e -> goNextEmployee());
+        btnOrdenarNombre.setOnAction(e -> orderByName());
+        btnOrdenarStock.setOnAction(e -> orderByStock());
 
-        btnEliminarInicio.setOnAction(e -> removeFirstEmployee());
+        btnEliminarInicio.setOnAction(e -> removeFirstProduct());
         btnEliminarFinal.setOnAction(e -> removeLastEmployee());
         btnEliminarDoble.setOnAction(e -> removeEmployeeById());
 
     }
 
-    private void addEmployeeDoubly() {
-        String id = txtId.getText() == null ? "" : txtId.getText().trim();
-        String name = txtName.getText() == null ? "" : txtName.getText().trim();
-        String job = (String) bxJobPosition.getValue();
-        LocalDate hire = dpHireDate.getValue();
+    private void orderByName() {
+        if (doublyData.isEmpty()) {
+            showAlert("Aviso", "No hay productos para ordenar.");
+            return;
+        }
 
-        if (id.isBlank() || name.isBlank() || job == null || hire == null) {
-            showAlert("Error", "Debe completar: Id, Name, Job Position y Hire date.");
+        // Ordenar por nombre (alfabéticamente)
+        FXCollections.sort(doublyData, Comparator.comparing(Product::getName, String.CASE_INSENSITIVE_ORDER));
+
+        // Actualizar la tabla
+        tableCircularDoubly.refresh();
+
+        // Registrar operación
+        listViewOperationsListDoubly.getItems().add("Ordenar por Nombre → completado");
+    }
+    private void orderByStock() {
+        if (doublyData.isEmpty()) {
+            showAlert("Aviso", "No hay productos para ordenar.");
+            return;
+        }
+
+        // Ordenar por stock (de menor a mayor)
+        FXCollections.sort(doublyData, Comparator.comparingInt(Product::getStock));
+
+        // Actualizar la tabla
+        tableCircularDoubly.refresh();
+
+        // Registrar operación
+        listViewOperationsListDoubly.getItems().add("Ordenar por Stock → completado");
+    }
+
+
+    private void addDoubly() {
+        int id = Integer.parseInt(txtId.getText() == null ? "" : txtId.getText().trim());
+        String name = txtName.getText() == null ? "" : txtName.getText().trim();
+        Double price = Double.valueOf(txtPrice.getText() == null ? "" : txtPrice.getText().trim());
+        int stock = Integer.parseInt(txtStock.getText() == null ? "" : txtStock.getText().trim());
+        String type = (String) bxType.getValue();
+        LocalDate registerDate = dpRegisterDate.getValue();
+
+        if (id== 0 || name.isBlank() || price == 0 || stock == 0 || type == null || registerDate ==null ) {
+            showAlert("Error", "Debe completar: Id, Name, Price, Stock, Type y Register date.");
             return;
         }
 
@@ -814,112 +633,115 @@ public class MainController {
             return;
         }
 
-        // El ID solo puede tener números
-        if (!id.matches("\\d+")) {
-            showAlert("Error", "El ID solo puede contener números.");
-            txtName.requestFocus();
-            return;
-        }
+
 
         // Que el ID no exista ya en la lista
-        if (existsEmployeeId(id)) {
-            showAlert("Error", "Ya existe un empleado con Id: " + id);
+        if (existsProductId(id)) {
+            showAlert("Error", "Ya existe un producto con Id: " + id);
             return;
         }
 
-        Employee emp = new Employee(name, id, 0, 0.0, 0.0, job, hire);
-        doublyList.add(emp);
-        doublyData.add(emp);
+        Product product = new Product( id, name,price,stock,type,registerDate);
+        doublyList.add(product);
+        doublyData.add(product);
 
-        currentEmployeeNode = doublyList.getTail();
+        currentProductNode = doublyList.getTail();
 
-        listViewOperationsListDoubly.getItems().add("add(" + id + ") HEAD ↔ [Empleado ID: " + id + "] ↔ ...");
+        listViewOperationsListDoubly.getItems().add("add(" + id + ") HEAD ↔ [Producto ID: " + id + "] ↔ ...");
 
         refreshDoublyUI("Insertado item: " + id);
 
+        cleanTextFields();
     }
 
-    private boolean existsEmployeeId(String id) {
+    private void cleanTextFields() {
+        txtId.clear();
+        txtName.clear();
+        txtPrice.clear();
+        txtStock.clear();
+        bxType.getSelectionModel().selectFirst();
+
+    }
+
+    private boolean existsProductId(int id) {
+
         try {
-            if (doublyList.isEmpty()) return false;
-            Node<Employee> aux = doublyList.getHead();
-            while (aux != null) {
-                if (aux.data != null && id.equals(aux.data.getId())) return true;
+
+            if (doublyList.isEmpty())
+                return false;
+
+            Node<Product> aux = doublyList.getHead();
+
+            do {
+
+                if(aux.data != null &&
+                        id == aux.data.getId()) {
+
+                    return true;
+                }
+
                 aux = aux.next;
-            }
+
+            } while(aux != doublyList.getHead());
+
         } catch (Exception ignored) {}
+
         return false;
     }
 
-    private void searchEmployeeDoubly() {
+    private void searchDoubly() {
         String id = txtId.getText() == null ? "" : txtId.getText().trim();
         if (id.isBlank()) {
             showAlert("Error", "Digite el Id a buscar.");
             return;
         }
 
-        Node<Employee> found = findById(id);
+        Node<Product> found = findById(id);
         if (found == null) {
             listViewOperationsListDoubly.getItems().add("search(" + id + ") → NO ENCONTRADO");
-            showAlert("Resultado", "No se encontró el empleado con Id: " + id);
+            showAlert("Resultado", "No se encontró el producto con Id: " + id);
             return;
         }
 
-        currentEmployeeNode = found;
+        currentProductNode = found;
         listViewOperationsListDoubly.getItems().add("search(" + id + ") → ENCONTRADO");
         refreshDoublyUI("Encontrado: " + id);
-        selectEmployeeInTable(found.data);
+        selectProductInTable(found.data);
     }
 
-    private Node<Employee> findById(String id) {
+    private Node<Product> findById(String id) {
         try {
-            if (doublyList.isEmpty()) return null;
-            Node<Employee> aux = doublyList.getHead();
-            while (aux != null) {
-                if (aux.data != null && id.equals(aux.data.getId())) return aux;
+
+            if(doublyList.isEmpty())
+                return null;
+
+            Node<Product> aux = doublyList.getHead();
+
+            do {
+
+                if(aux.data != null &&
+                        id.equals(String.valueOf(aux.data.getId()))) {
+
+                    return aux;
+                }
+
                 aux = aux.next;
-            }
-        } catch (Exception ignored) {}
+
+            } while(aux != doublyList.getHead());
+
+        } catch (Exception ignored){}
+
         return null;
     }
 
-    private void goFirstEmployee() {
-        if (doublyList.isEmpty()) { showAlert("Info", "Lista vacía"); return; }
-        currentEmployeeNode = doublyList.getHead();
-        refreshDoublyUI("Primero");
-        selectEmployeeInTable(currentEmployeeNode.data);
-    }
 
-    private void goLastEmployee() {
-        if (doublyList.isEmpty()) { showAlert("Info", "Lista vacía"); return; }
-        currentEmployeeNode = doublyList.getTail();
-        refreshDoublyUI("Último");
-        selectEmployeeInTable(currentEmployeeNode.data);
-    }
-
-    private void goPrevEmployee() {
-        if (currentEmployeeNode == null) { showAlert("Info", "No hay selección"); return; }
-        if (currentEmployeeNode.prev == null) { showAlert("Info", "Ya está en el primero"); return; }
-        currentEmployeeNode = currentEmployeeNode.prev;
-        refreshDoublyUI("Anterior");
-        selectEmployeeInTable(currentEmployeeNode.data);
-    }
-
-    private void goNextEmployee() {
-        if (currentEmployeeNode == null) { showAlert("Info", "No hay selección"); return; }
-        if (currentEmployeeNode.next == null) { showAlert("Info", "Ya está en el último"); return; }
-        currentEmployeeNode = currentEmployeeNode.next;
-        refreshDoublyUI("Siguiente");
-        selectEmployeeInTable(currentEmployeeNode.data);
-    }
-
-    private void removeFirstEmployee() {
+    private void removeFirstProduct() {
         try {
-            Employee removed = doublyList.removeFirst();
+            Product removed = doublyList.removeFirst();
             doublyData.remove(removed);
             listViewOperationsListDoubly.getItems().add("removeFirst() → eliminado ID: " + removed.getId());
 
-            currentEmployeeNode = doublyList.isEmpty() ? null : doublyList.getHead();
+            currentProductNode = doublyList.isEmpty() ? null : doublyList.getHead();
             refreshDoublyUI("Eliminado inicio");
         } catch (ListException e) {
             showAlert("Error", e.getMessage());
@@ -928,11 +750,11 @@ public class MainController {
 
     private void removeLastEmployee() {
         try {
-            Employee removed = doublyList.removeLast();
+            Product removed = doublyList.removeLast();
             doublyData.remove(removed);
             listViewOperationsListDoubly.getItems().add("removeLast() → eliminado ID: " + removed.getId());
 
-            currentEmployeeNode = doublyList.isEmpty() ? null : doublyList.getTail();
+            currentProductNode = doublyList.isEmpty() ? null : doublyList.getTail();
             refreshDoublyUI("Eliminado final");
         } catch (ListException e) {
             showAlert("Error", e.getMessage());
@@ -946,7 +768,7 @@ public class MainController {
             return;
         }
 
-        Node<Employee> found = findById(id);
+        Node<Product> found = findById(id);
         if (found == null) {
             showAlert("Resultado", "No existe el Id: " + id);
             return;
@@ -957,7 +779,7 @@ public class MainController {
             doublyData.remove(found.data);
             listViewOperationsListDoubly.getItems().add("remove(" + id + ") → eliminado");
 
-            currentEmployeeNode = doublyList.isEmpty() ? null : doublyList.getHead();
+            currentProductNode = doublyList.isEmpty() ? null : doublyList.getHead();
             refreshDoublyUI("Eliminado: " + id);
         } catch (ListException e) {
             showAlert("Error", e.getMessage());
@@ -967,16 +789,16 @@ public class MainController {
     private void clearDoublyTab() {
         doublyList.clear();
         doublyData.clear();
-        currentEmployeeNode = null;
+        currentProductNode = null;
 
         txtId.clear();
         txtName.clear();
-        dpHireDate.setValue(LocalDate.now());
-        bxJobPosition.getSelectionModel().selectFirst();
+        dpRegisterDate.setValue(LocalDate.now());
+        bxType.getSelectionModel().selectFirst();
 
         listViewOperationsListDoubly.getItems().clear();
         txAreaNodeRepreDoubly.setText("");
-        txtInsertadoIn1.setText("");
+        txtInsertadoInDoubly.setText("");
 
         clearCanvasDoubly();
     }
@@ -986,16 +808,16 @@ public class MainController {
         txAreaNodeRepreDoubly.setText(doublyList.toString());
 
         // Insertad
-        txtInsertadoIn1.setText(status);
+        txtInsertadoInDoubly.setText(status);
 
         // dibujar
         drawDoublyList();
     }
 
-    private void selectEmployeeInTable(Employee emp) {
+    private void selectProductInTable(Product emp) {
         if (emp == null) return;
-        colID.getSelectionModel().select(emp);
-        colID.scrollTo(emp);
+        tableCircularDoubly.getSelectionModel().select(emp);
+        tableCircularDoubly.scrollTo(emp);
     }
 
     private void clearCanvasDoubly() {
@@ -1010,84 +832,75 @@ public class MainController {
 
         if (doublyList.isEmpty()) return;
 
-        double startX = 60;
+        double startX = 80;
         double y = canvasListDoubly.getHeight() / 2.0;
         double nodeW = 90;
         double nodeH = 55;
-        double gap = 40;
+        double gap = 60;
 
+        Color nodeColor = Color.web("#1f2a44");
+        Color arrowColor = Color.web("#f5a623");
 
-        // HEAD + Flecha hacía el primer nodo
-        gc.setFill(Color.BLACK);
-        gc.setFont(Font.font(14));
-        gc.fillText("HEAD", startX - 50, y + 5);
+        // HEAD
+        gc.setFill(nodeColor);
+        gc.fillRoundRect(startX - 60, y - 15, 50, 30, 10, 10);
+        gc.setFill(Color.web("#f5a623"));
+        gc.fillText("HEAD", startX - 45, y + 5);
 
-        {
-            double hx1 = startX - 15;
-            double hx2 = startX;
-            gc.setStroke(Color.web("#f5a623"));
-            gc.setLineWidth(2);
-            gc.strokeLine(hx1, y, hx2, y);
-            // punta de flecha hacia el nodo
-            gc.strokeLine(hx2 - 6, y - 6, hx2, y);
-            gc.strokeLine(hx2 - 6, y + 6, hx2, y);
-        }
-
-        Node<Employee> aux = doublyList.getHead();
+        Node<Product> aux = doublyList.getHead();
         double x = startX;
 
-        while (aux != null) {
-            boolean highlight = (aux == currentEmployeeNode);
+        do {
+            boolean highlight = (aux == currentProductNode);
 
-            gc.setFill(highlight ? Color.web("#8ef28e") : Color.web("#1f2a44"));
+            gc.setFill(highlight ? Color.web("#8ef28e") : nodeColor);
             gc.fillRoundRect(x, y - nodeH / 2, nodeW, nodeH, 8, 8);
-
             gc.setStroke(Color.BLACK);
             gc.strokeRoundRect(x, y - nodeH / 2, nodeW, nodeH, 8, 8);
 
-            // Representación del ID en el canvas
             gc.setFill(Color.WHITE);
-            String id = (aux.data != null && aux.data.getId() != null) ? aux.data.getId() : "?";
-            String text = "👤: " + id;
+            String text = "⊚: " + (aux.data != null ? aux.data.getName() : 0);
             gc.fillText(text, x + 10, y + 5);
 
-
-            //Dibujado de flechas
+            // Flechas hacia adelante y atrás
             if (aux.next != null) {
                 double ax1 = x + nodeW;
                 double ax2 = x + nodeW + gap;
 
-                gc.setStroke(Color.web("#f5a623"));
+                gc.setStroke(arrowColor);
                 gc.setLineWidth(2);
 
+                // Flecha hacia adelante
                 gc.strokeLine(ax1, y, ax2, y);
                 gc.strokeLine(ax2 - 6, y - 6, ax2, y);
                 gc.strokeLine(ax2 - 6, y + 6, ax2, y);
 
-                gc.strokeLine(ax2, y + 12, ax1, y + 12);
-                gc.strokeLine(ax1 + 6, y + 12 - 6, ax1, y + 12);
-                gc.strokeLine(ax1 + 6, y + 12 + 6, ax1, y + 12);
+                // Flecha hacia atrás (más abajo)
+                gc.strokeLine(ax2, y + 15, ax1, y + 15);
+                gc.strokeLine(ax1 + 6, y + 15 - 6, ax1, y + 15);
+                gc.strokeLine(ax1 + 6, y + 15 + 6, ax1, y + 15);
             }
 
             x += nodeW + gap;
             aux = aux.next;
-        }
+        } while (aux != doublyList.getHead());
 
-        //NULL + Flecha hacía Null
-        {
-            double lx1 = x - gap;
-            double lx2 = x;
-            gc.setStroke(Color.web("#f5a623"));
-            gc.setLineWidth(2);
-            gc.strokeLine(lx1, y, lx2, y);
-            // punta hacia NULL
-            gc.strokeLine(lx2 - 6, y - 6, lx2, y);
-            gc.strokeLine(lx2 - 6, y + 6, lx2, y);
-        }
+        // Flecha circular de retorno al HEAD
+        double arrowStartX = x - gap;
+        double arrowEndX = startX - 10;
+        double arrowTopY = y - 90;
 
-        gc.setFill(Color.BLACK);
-        gc.fillText("NULL", x + 10, y + 5);
+        gc.setStroke(arrowColor);
+        gc.setLineWidth(2);
+        gc.strokeLine(arrowStartX, y, arrowStartX, arrowTopY);
+        gc.strokeLine(arrowStartX, arrowTopY, arrowEndX, arrowTopY);
+        gc.strokeLine(arrowEndX, arrowTopY, arrowEndX, y - nodeH / 2);
+
+        // Punta de flecha hacia el HEAD
+        gc.strokeLine(arrowEndX - 5, y - nodeH / 2 - 5, arrowEndX, y - nodeH / 2);
+        gc.strokeLine(arrowEndX - 5, y - nodeH / 2 + 5, arrowEndX, y - nodeH / 2);
     }
+
 
 
 }
